@@ -1,0 +1,60 @@
+Vermelha
+1 - Aeroporto
+2 - Encarnacao
+3 - Moscavide
+4 - Oriente
+5 - Cabo Ruivo
+6 - Olivais
+7 - Chelas
+8 - Bela Vista
+9 - Olaias
+10 - Alameda
+11 - Saldanha
+12 - Sao Sebastiao
+Amarela
+1 - Odivelas
+2 - Senhor Roubado
+3 - Ameixoeira
+4 - Lumiar
+5 - Quinta das Conchas
+6 - Campo Grande
+7 - Cidade Universitaria
+8 - Entre Campos
+9 - Campo Pequeno
+10 - Saldanha
+11 - Picoas
+12 - Marques de Pombal
+13 - Rato
+Verde
+1 - Telheiras
+2 - Campo Grande
+3 - Alvalade
+4 - Roma
+5 - Areeiro
+6 - Alameda
+7 - Arroios
+8 - Anjos
+9 - Intendente
+10 - Martim Moniz
+11 - Rossio
+12 - Baixa/Chiado
+13 - Cais do Sodre
+Azul
+1 - Reboleira
+2 - Amadora Este
+3 - Alfornelos
+4 - Pontinha
+5 - Carnide
+6 - Colegio Militar/Luz
+7 - Alto dos Moinhos
+8 - Laranjeiras
+9 - Jardim Zoologico
+10 - Praca de Espanha
+11 - Sao Sebastiao
+12 - Parque
+13 - Marques de Pombal
+14 - Avenida
+15 - Restauradores
+16 - Baixa/Chiado
+17 - Terreiro do Paco
+18 - Santa Apolonia
