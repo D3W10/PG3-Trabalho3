@@ -1,19 +1,17 @@
 package com.trab3;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CVertex implements Metro.Vertex<String> {
 
     private final String id;
     private int cost;
     private String parent;
-    private Map<String, Integer> adjacents;
+    private Collection<String> adjacents;
 
-    public CVertex(String id) {
+    public CVertex(String id, Collection<String> adjacents) {
         this.id = id;
-        this.adjacents = new HashMap<>();
+        this.adjacents = adjacents;
     }
 
     @Override
@@ -33,25 +31,12 @@ public class CVertex implements Metro.Vertex<String> {
 
     @Override
     public Collection<String> getAdjacents() {
-        return adjacents.keySet();
+        return adjacents;
     }
 
     @Override
     public void set(int cost, String parent) {
         this.cost = cost;
         this.parent = parent;
-    }
-
-
-
-
-
-    // Carlos
-
-
-
-
-    public void addAdjacent(String neighbor, int weight) {
-        adjacents.put(neighbor, weight);
     }
 }
