@@ -77,6 +77,6 @@ public class Dijkstra {
     }
 
     private static <V extends Metro.Vertex<String>> int getWeightBetweenVertices(V source, V destination) {
-        return source.getAdjacents().contains(destination.getId()) ? source.getAdjacents().size() : Integer.MAX_VALUE;
+        return 2;//source.getAdjacents().contains(destination.getId()) ? source.getAdjacents().size() : Integer.MAX_VALUE;
     }
 }
