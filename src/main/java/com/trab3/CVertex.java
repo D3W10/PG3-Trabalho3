@@ -2,11 +2,13 @@ package com.trab3;
 
 import java.util.Collection;
 
-public class CVertex implements Metro.Vertex<String> {
-
+public class CVertex implements Vertex<String> {
     private final String id;
+
     private int cost;
+
     private String parent;
+
     private Collection<String> adjacents;
 
     public CVertex(String id, Collection<String> adjacents) {

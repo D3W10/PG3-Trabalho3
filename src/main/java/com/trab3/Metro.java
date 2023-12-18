@@ -87,14 +87,8 @@ public class Metro {
         return map;
     }
 
-    public interface Vertex<ID> {
-        ID getId();
-        int getCost();
-        ID getParent();
-        Collection<ID> getAdjacents();
-        void set(int cost, ID parent);
-        int hashCode();
-        boolean equals(Object o);
+    public interface VertexMetro<ID> extends Vertex<String> {
+        Collection<String> getLines();
+        int getWeight(ID v);
     }
-    
 }
