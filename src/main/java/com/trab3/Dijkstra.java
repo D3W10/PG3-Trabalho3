@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -28,61 +27,51 @@ public class Dijkstra {
             graph.put(s, new CVertexMetro(s, adjacents.get(s), stations.get(s), 2));
         });
 
-        String startNode = "A";
-        String destinationNode = "E";
+        String startNode = "Entre Campos";
+        String destinationNode = "Senhor Roubado";
 
-        //List<CVertex> shortestPath = dijkstra(graph, startNode, destinationNode, Dijkstra::getWeightBetweenVertices);
+        List<CVertexMetro> shortestPath = dijkstra(graph, startNode, destinationNode, Dijkstra::getWeightBetweenVertices);
 
-        /*System.out.println("Shortest path from node " + startNode + " to node " + destinationNode + ": ");
+        System.out.println("Shortest path from node " + startNode + " to node " + destinationNode + ": ");
         for (CVertex vertex : shortestPath) {
             System.out.println("Node: " + vertex.getId() + ", Cost: " + vertex.getCost() + ", Parent: " + vertex.getParent());
-        }*/
+        }
     }
 
     public static <ID, V extends Vertex<ID>> List<V> dijkstra(Map<ID, V> graph, ID start, ID destination, BiFunction<V, V, Integer> getWeightBetweenVertices) {
-        /*List<V> shortestPath = new ArrayList<>();
-        PriorityQueue<V> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Metro.Vertex::getCost));
+        List<V> s = new ArrayList<>();
+        PriorityQueue<V> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Vertex::getCost));
 
         for (ID id : graph.keySet()) {
             V vertex = graph.get(id);
-            if (id.equals(start)) {
+
+            if (id.equals(start))
                 vertex.set(0, null);
-            } else {
+            else
                 vertex.set(Integer.MAX_VALUE, null);
-            }
+
             priorityQueue.add(vertex);
         }
 
         while (!priorityQueue.isEmpty()) {
-            V current = priorityQueue.poll();
+            V v = priorityQueue.poll();
+            s.add(v);
 
-            if (current.getId().equals(destination)) {
-                // Destination reached, reconstruct the path
-                while (current != null) {
-                    shortestPath.add(current);
-                    current = graph.get(current.getParent());
-                }
-                Collections.reverse(shortestPath);
-                break;
-            }
+            if (v.getId() == destination)
+                return s;
 
-            for (ID neighborId : current.getAdjacents()) {
-                V neighbor = graph.get(neighborId);
-                int newDistance = current.getCost() + getWeightBetweenVertices.apply(current, neighbor);
+            for (ID adjacent : v.getAdjacents()) {
+                V u = graph.get(adjacent);
 
-                if (newDistance < neighbor.getCost()) {
-                    priorityQueue.remove(neighbor);
-                    neighbor.set(newDistance, current.getId());
-                    priorityQueue.add(neighbor);
-                }
+                if (v.getCost() + getWeightBetweenVertices(v, u) < u.getCost())
+                    u.set(v.getCost() + getWeightBetweenVertices(v, u), v.getId());
             }
         }
 
-        return shortestPath;*/
-        return null;
+        return s;
     }
 
-    /*private static <V extends Metro.Vertex<String>> int getWeightBetweenVertices(V source, V destination) {
+    private static <ID, V extends Vertex<ID>> int getWeightBetweenVertices(V source, V destination) {
         return 2;
-    }*/
+    }
 }

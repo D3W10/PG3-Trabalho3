@@ -13,6 +13,8 @@ public class CVertex implements Vertex<String> {
 
     public CVertex(String id, Collection<String> adjacents) {
         this.id = id;
+        this.cost = 0;
+        this.parent = null;
         this.adjacents = adjacents;
     }
 
