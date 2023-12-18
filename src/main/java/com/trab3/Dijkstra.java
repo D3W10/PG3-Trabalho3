@@ -1,41 +1,46 @@
 package com.trab3;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class Dijkstra {
     public static void main(String[] args) {
-        // Example graph represented as an adjacency list
-        Map<String, CVertex> graph = new HashMap<>();
-        graph.put("A", new CVertex("A"));
-        graph.put("B", new CVertex("B"));
-        graph.put("C", new CVertex("C"));
-        graph.put("D", new CVertex("D"));
-        graph.put("E", new CVertex("E"));
-        graph.put("F", new CVertex("F"));
+        Map<String, CVertexMetro> graph = new HashMap<>();
+        Map<String, List<String>> lines;
 
-        graph.get("A").addAdjacent("B", 2);
-        graph.get("A").addAdjacent("C", 2);
-        graph.get("B").addAdjacent("F", 2);
-        graph.get("F").addAdjacent("D", 2);
-        graph.get("C").addAdjacent("D", 2);
-        graph.get("D").addAdjacent("E", 2);
+        try (BufferedReader br = new BufferedReader(new FileReader(PathNormalize.parse("metro/metro.txt")))) {
+            lines = Metro.lines(br, (Supplier<List<String>>) ArrayList::new);
+        }
+        catch (IOException e) {
+            System.out.println("ERRO");
+            return;
+        }
 
+        Map<String, List<String>> adjacents = Metro.adjacents(lines, ArrayList::new);
+        Map<String, Set<String>> stations = Metro.stations(lines, HashMap::new, HashSet::new);
+
+        stations.forEach((s, strings) -> {
+            graph.put(s, new CVertexMetro(s, adjacents.get(s), stations.get(s), 2));
+        });
 
         String startNode = "A";
         String destinationNode = "E";
 
-        List<CVertex> shortestPath = dijkstra(graph, startNode, destinationNode, Dijkstra::getWeightBetweenVertices);
+        //List<CVertex> shortestPath = dijkstra(graph, startNode, destinationNode, Dijkstra::getWeightBetweenVertices);
 
-        // Print the shortest path from the start node to the destination node
-        System.out.println("Shortest path from node " + startNode + " to node " + destinationNode + ": ");
+        /*System.out.println("Shortest path from node " + startNode + " to node " + destinationNode + ": ");
         for (CVertex vertex : shortestPath) {
             System.out.println("Node: " + vertex.getId() + ", Cost: " + vertex.getCost() + ", Parent: " + vertex.getParent());
-        }
+        }*/
     }
 
-    public static <ID, V extends Metro.Vertex<ID>> List<V> dijkstra(Map<ID, V> graph, ID start, ID destination, BiFunction<V, V, Integer> getWeightBetweenVertices) {
-        List<V> shortestPath = new ArrayList<>();
+    public static <ID, V extends Vertex<ID>> List<V> dijkstra(Map<ID, V> graph, ID start, ID destination, BiFunction<V, V, Integer> getWeightBetweenVertices) {
+        /*List<V> shortestPath = new ArrayList<>();
         PriorityQueue<V> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(Metro.Vertex::getCost));
 
         for (ID id : graph.keySet()) {
@@ -73,10 +78,11 @@ public class Dijkstra {
             }
         }
 
-        return shortestPath;
+        return shortestPath;*/
+        return null;
     }
 
-    private static <V extends Metro.Vertex<String>> int getWeightBetweenVertices(V source, V destination) {
-        return 2;//source.getAdjacents().contains(destination.getId()) ? source.getAdjacents().size() : Integer.MAX_VALUE;
-    }
+    /*private static <V extends Metro.Vertex<String>> int getWeightBetweenVertices(V source, V destination) {
+        return 2;
+    }*/
 }
