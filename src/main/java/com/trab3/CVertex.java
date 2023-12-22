@@ -9,7 +9,7 @@ public class CVertex implements Vertex<String> {
 
     private String parent;
 
-    private Collection<String> adjacents;
+    private final Collection<String> adjacents;
 
     public CVertex(String id, Collection<String> adjacents) {
         this.id = id;

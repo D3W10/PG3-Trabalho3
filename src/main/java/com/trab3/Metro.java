@@ -14,7 +14,7 @@ public class Metro {
      * @param supL construtor de inicialização do objeto tipo {@link L}
      * @throws IOException se o ficheiro não existir, for uma pasta ou qualquer outra razão que impossibilita a abertura do ficheiro para leitura
      *
-     * @return Um {@link Map} com todas as linhas e suas estações
+     * @return um {@link Map} com todas as linhas e suas estações
      */
     public static <L extends List<String>> Map<String, L> lines(BufferedReader br, Supplier<L> supL) throws IOException {
         String line;
@@ -40,7 +40,7 @@ public class Metro {
      * @param lines um {@link Map} em que a chave é a identificação da linha e os dados são as estações que a compõem
      * @param supC construtor de inicialização do objeto tipo {@link C}
      *
-     * @return Um {@link Map} com as estações e respetivas estações adjacentes
+     * @return um {@link Map} com as estações e respetivas estações adjacentes
      */
     public static <C extends Collection<String>> Map<String, C> adjacents(Map<String,? extends List<String>> lines, Supplier<C> supC) {
         Map<String, C> map = new HashMap<>();
@@ -62,13 +62,13 @@ public class Metro {
     }
 
     /**
-     * Produza um {@link Map} em que a chave é o nome da estação e os valores são o conjunto de linhas que passam nessa mesma estação
+     * Produza um {@link Map} em que a chave é o nome da estação e os valores são o conjunto de linhas que passam nessa mesma estação.
      *
      * @param lines um {@link Map} em que a chave é a identificação da linha e os dados são as estações que a compõem
      * @param supM construtor de inicialização de objeto derivado de {@link Set}
      * @param supS construtor de inicialização do objeto tipo {@link S}
      *
-     * @return Um {@link Map} com as estações como chaves e linhas a quais pertencem como valores
+     * @return um {@link Map} com as estações como chaves e linhas a quais pertencem como valores
      */
     public static <S extends Set<String>> Map<String, S> stations(Map<String, ? extends List<String>> lines, Supplier<? extends Map<String, S>> supM, Supplier<S> supS) {
         Map<String, S> map = supM.get();
@@ -89,6 +89,7 @@ public class Metro {
 
     public interface VertexMetro<ID> extends Vertex<String> {
         Collection<String> getLines();
+
         int getWeight(ID v);
     }
 }

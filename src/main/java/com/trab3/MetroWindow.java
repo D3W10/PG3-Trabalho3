@@ -13,15 +13,17 @@ import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class MetroWindow extends JFrame {
-
     private static final int HEIGHT = 300;
+
     private static final int WIDTH = 400;
+
     private static final JTextArea textArea = new JTextArea();
+
     private static final ImageIcon metroIcon = new ImageIcon(PathNormalize.parse("src/main/resources/logo.png"));
 
     MetroWindow() {
-
         super("Metro");
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -187,44 +189,21 @@ public class MetroWindow extends JFrame {
 
                 String origin = showInputDialog(null, "Estação de origem", "Origem", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
                 String destination = showInputDialog(null, "Estação de chegada", "Chegada", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
-                String commonLine = null;
 
-                if (origin.equals(destination)) {
+                Map<String, CVertexMetro> graph = new HashMap<>();
+                Map<String, List<String>> adjacentsMap = Metro.adjacents(map, ArrayList::new);
+
+                stationsMap.forEach((s, strings) -> graph.put(s, new CVertexMetro(s, adjacentsMap.get(s), stationsMap.get(s), 2)));
+
+                List<CVertexMetro> shortestPath = Dijkstra.dijkstra(graph, origin, destination, (s, d) -> 2);
+
+                if (origin.equals(destination))
                     showMessageDialog(null, "A estação de origem e de destino são iguais.", "Path Finder", JOptionPane.ERROR_MESSAGE, metroIcon);
-                    return;
-                }
-
-                for (String oLine : stationsMap.get(origin)) {
-                    for (String dLine : stationsMap.get(destination)) {
-                        if (oLine.equals(dLine)) {
-                            commonLine = oLine;
-                            break;
-                        }
-                    }
-                }
-
-                if (commonLine != null)
-                    showMessageDialog(null, "Trajeto " + origin + " ↔ " + destination + "\n\n\t\t\t\t\t" + writeStations(origin, destination, map.get(commonLine)).replace("\n", "\n\t\t\t\t\t"), "Path Finder", JOptionPane.INFORMATION_MESSAGE, metroIcon);
-                else {
-                    String lineOrigin = (String) stationsMap.get(origin).toArray()[0];
-                    String lineDestination = (String) stationsMap.get(destination).toArray()[0];
-                    var crossedStation = new Object() {
-                        String name = null;
-                    };
-
-                    stationsMap.forEach((station, lines) -> {
-                        if (lines.contains(lineOrigin) && lines.contains(lineDestination))
-                            crossedStation.name = station;
-                    });
-
-                    String segments = writeStations(origin, crossedStation.name, map.get(lineOrigin));
-                    segments += "\n\t\t\t\t\t\uD83D\uDD04\n\n";
-                    segments += writeStations(crossedStation.name, destination, map.get(lineDestination));
-
-                    showMessageDialog(null, "Trajeto " + origin + " ↔ " + destination + "\n\n\t\t\t\t\t" + segments.replace("\n", "\n\t\t\t\t\t"), "Path Finder", JOptionPane.INFORMATION_MESSAGE, metroIcon);
-                }
+                else if (shortestPath == null)
+                    throw new NullPointerException("Non-existent path");
+                else
+                    showMessageDialog(null, "Trajeto " + origin + " ↔ " + destination + "\n\n\t\t\t\t\t" + writeStations(shortestPath).replace("\n", "\n\t\t\t\t\t"), "Path Finder", JOptionPane.INFORMATION_MESSAGE, metroIcon);
             }
-            catch (NullPointerException ignored) {}
             catch (Exception ex) {
                 showMessageDialog(null, "Não foi possível visualizar o caminho entre estas estações", "Erro", JOptionPane.ERROR_MESSAGE, metroIcon);
             }
@@ -237,20 +216,13 @@ public class MetroWindow extends JFrame {
         textArea.setText("");
     }
 
-    private static String writeStations(String origin, String destination, List<String> line) {
-        int oIdx = line.indexOf(origin), dIdx = line.indexOf(destination);
+    private static String writeStations(List<CVertexMetro> path) {
         StringBuilder sb = new StringBuilder();
 
-        if (oIdx > dIdx) {
-            Collections.reverse(line);
-            oIdx = line.size() - 1 - oIdx;
-            dIdx = line.size() - 1 - dIdx;
-        }
+        for (CVertexMetro station : path)
+            sb.append("\n").append(station.getId());
 
-        for (int i = oIdx; i <= dIdx; i++)
-            sb.append(line.get(i)).append("\n");
-
-        return sb.toString();
+        return sb.toString().replaceFirst("\n", "");
     }
 
     public static void main(String[] args) {

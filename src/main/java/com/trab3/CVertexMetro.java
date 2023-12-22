@@ -3,9 +3,9 @@ package com.trab3;
 import java.util.Collection;
 
 public class CVertexMetro extends CVertex implements Metro.VertexMetro<String> {
-    private Collection<String> lines;
+    private final Collection<String> lines;
 
-    private int weight;
+    private final int weight;
 
     public CVertexMetro(String id, Collection<String> adjacents, Collection<String> lines, int weight) {
         super(id, adjacents);
