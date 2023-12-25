@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.List;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static javax.swing.JOptionPane.showInputDialog;
@@ -179,10 +180,14 @@ public class MetroWindow extends JFrame {
 
     private static JMenuItem getPathfinder() {
         JMenuItem pathfinder = new JMenuItem("Path Finder");
+
         pathfinder.addActionListener(e -> {
             try (BufferedReader br = new BufferedReader(new FileReader(PathNormalize.parse("metro/metro.txt")))) {
                 Map<String, List<String>> map = Metro.lines(br, (Supplier<List<String>>) ArrayList::new);
                 Map<String, Set<String>> stationsMap = Metro.stations(map, HashMap::new, HashSet::new);
+                var oldLineObj = new Object() {
+                    String oldLine = null;
+                };
 
                 List<String> sortedKeys = new ArrayList<>(stationsMap.keySet());
                 Collections.sort(sortedKeys);
@@ -190,12 +195,25 @@ public class MetroWindow extends JFrame {
                 String origin = showInputDialog(null, "Estação de origem", "Origem", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
                 String destination = showInputDialog(null, "Estação de chegada", "Chegada", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
 
+                BiFunction<CVertexMetro, CVertexMetro, Integer> getWeightBetweenVertices = (s1, s2) -> {
+                    if (oldLineObj.oldLine == null) {
+                        oldLineObj.oldLine = getCommonLine(stationsMap, s1.getId(), s2.getId());
+                        return 2;
+                    }
+                    else if (oldLineObj.oldLine.equals(getCommonLine(stationsMap, s1.getId(), s2.getId())))
+                        return 2;
+                    else {
+                        oldLineObj.oldLine = getCommonLine(stationsMap, s1.getId(), s2.getId());
+                        return 2 + 5;
+                    }
+                };
+
                 Map<String, CVertexMetro> graph = new HashMap<>();
                 Map<String, List<String>> adjacentsMap = Metro.adjacents(map, ArrayList::new);
 
                 stationsMap.forEach((s, strings) -> graph.put(s, new CVertexMetro(s, adjacentsMap.get(s), stationsMap.get(s), 2)));
 
-                List<CVertexMetro> shortestPath = Dijkstra.dijkstra(graph, origin, destination, (s, d) -> 2);
+                List<CVertexMetro> shortestPath = Dijkstra.dijkstra(graph, origin, destination, getWeightBetweenVertices);
 
                 if (origin.equals(destination))
                     showMessageDialog(null, "A estação de origem e de destino são iguais.", "Path Finder", JOptionPane.ERROR_MESSAGE, metroIcon);
@@ -208,7 +226,19 @@ public class MetroWindow extends JFrame {
                 showMessageDialog(null, "Não foi possível visualizar o caminho entre estas estações", "Erro", JOptionPane.ERROR_MESSAGE, metroIcon);
             }
         });
+
         return pathfinder;
+    }
+
+    private static String getCommonLine(Map<String, Set<String>> map, String s1, String s2) {
+        for (String oLine : map.get(s1)) {
+            for (String dLine : map.get(s2)) {
+                if (oLine.equals(dLine))
+                    return oLine;
+            }
+        }
+
+        return null;
     }
 
     private static void switchMode(String name) {
