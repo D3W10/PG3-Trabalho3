@@ -22,7 +22,7 @@ public class MetroWindow extends JFrame {
 
     private static final ImageIcon metroIcon = new ImageIcon(PathNormalize.parse("src/main/resources/logo.png"));
 
-    MetroWindow() {
+    public MetroWindow() {
         super("Metro");
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -185,9 +185,6 @@ public class MetroWindow extends JFrame {
             try (BufferedReader br = new BufferedReader(new FileReader(PathNormalize.parse("metro/metro.txt")))) {
                 Map<String, List<String>> map = Metro.lines(br, (Supplier<List<String>>) ArrayList::new);
                 Map<String, Set<String>> stationsMap = Metro.stations(map, HashMap::new, HashSet::new);
-                var oldLineObj = new Object() {
-                    String oldLine = null;
-                };
 
                 List<String> sortedKeys = new ArrayList<>(stationsMap.keySet());
                 Collections.sort(sortedKeys);
@@ -195,23 +192,20 @@ public class MetroWindow extends JFrame {
                 String origin = showInputDialog(null, "Estação de origem", "Origem", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
                 String destination = showInputDialog(null, "Estação de chegada", "Chegada", JOptionPane.QUESTION_MESSAGE, metroIcon, sortedKeys.toArray(), sortedKeys.toArray()[0]).toString();
 
-                BiFunction<CVertexMetro, CVertexMetro, Integer> getWeightBetweenVertices = (s1, s2) -> {
-                    if (oldLineObj.oldLine == null) {
-                        oldLineObj.oldLine = getCommonLine(stationsMap, s1.getId(), s2.getId());
-                        return 2;
-                    }
-                    else if (oldLineObj.oldLine.equals(getCommonLine(stationsMap, s1.getId(), s2.getId())))
-                        return 2;
-                    else {
-                        oldLineObj.oldLine = getCommonLine(stationsMap, s1.getId(), s2.getId());
-                        return 2 + 5;
-                    }
-                };
-
                 Map<String, CVertexMetro> graph = new HashMap<>();
                 Map<String, List<String>> adjacentsMap = Metro.adjacents(map, ArrayList::new);
 
                 stationsMap.forEach((s, strings) -> graph.put(s, new CVertexMetro(s, adjacentsMap.get(s), stationsMap.get(s), 2)));
+
+                BiFunction<CVertexMetro, CVertexMetro, Integer> getWeightBetweenVertices = (s1, s2) -> {
+                    String lineBetweenNext = getCommonLine(stationsMap, s1.getId(), s2.getId());
+                    String lineBetweenParent = s1.getParent() == null ? lineBetweenNext : getCommonLine(stationsMap, s1.getId(), graph.get(s1.getParent()).getId());
+
+                    if (lineBetweenNext == null || lineBetweenNext.equals(lineBetweenParent))
+                        return 2;
+                    else
+                        return 2 + 5;
+                };
 
                 List<CVertexMetro> shortestPath = Dijkstra.dijkstra(graph, origin, destination, getWeightBetweenVertices);
 
