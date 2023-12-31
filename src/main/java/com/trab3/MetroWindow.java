@@ -198,8 +198,8 @@ public class MetroWindow extends JFrame {
                 stationsMap.forEach((s, strings) -> graph.put(s, new CVertexMetro(s, adjacentsMap.get(s), stationsMap.get(s), 2)));
 
                 BiFunction<CVertexMetro, CVertexMetro, Integer> getWeightBetweenVertices = (s1, s2) -> {
-                    String lineBetweenNext = getCommonLine(stationsMap, s1.getId(), s2.getId());
-                    String lineBetweenParent = s1.getParent() == null ? lineBetweenNext : getCommonLine(stationsMap, s1.getId(), graph.get(s1.getParent()).getId());
+                    String lineBetweenNext = getCommonLine(s1, s2);
+                    String lineBetweenParent = s1.getParent() == null ? lineBetweenNext : getCommonLine(s1, graph.get(s1.getParent()));
 
                     if (lineBetweenNext == null || lineBetweenNext.equals(lineBetweenParent))
                         return 2;
@@ -224,9 +224,9 @@ public class MetroWindow extends JFrame {
         return pathfinder;
     }
 
-    private static String getCommonLine(Map<String, Set<String>> map, String s1, String s2) {
-        for (String oLine : map.get(s1)) {
-            for (String dLine : map.get(s2)) {
+    private static String getCommonLine(CVertexMetro s1, CVertexMetro s2) {
+        for (String oLine : s1.getLines()) {
+            for (String dLine : s2.getLines()) {
                 if (oLine.equals(dLine))
                     return oLine;
             }
