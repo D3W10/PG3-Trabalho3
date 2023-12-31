@@ -212,7 +212,7 @@ public class MetroWindow extends JFrame {
                 if (origin.equals(destination))
                     showMessageDialog(null, "A estação de origem e de destino são iguais.", "Path Finder", JOptionPane.ERROR_MESSAGE, metroIcon);
                 else if (shortestPath == null)
-                    throw new NullPointerException("Non-existent path");
+                    showMessageDialog(null, "Não existe nenhum caminho entre " + origin + " e " + destination + ".", "Path Finder", JOptionPane.ERROR_MESSAGE, metroIcon);
                 else
                     showMessageDialog(null, "Trajeto " + origin + " ↔ " + destination + "\n\n\t\t\t\t\t" + writeStations(shortestPath).replace("\n", "\n\t\t\t\t\t"), "Path Finder", JOptionPane.INFORMATION_MESSAGE, metroIcon);
             }
