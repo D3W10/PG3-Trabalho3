@@ -87,7 +87,7 @@ public class Metro {
         return map;
     }
 
-    public interface VertexMetro<ID> extends Vertex<String> {
+    public interface VertexMetro<ID> extends Vertex<ID> {
         Collection<String> getLines();
 
         int getWeight(ID v);
