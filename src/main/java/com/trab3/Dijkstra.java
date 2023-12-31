@@ -61,8 +61,7 @@ public class Dijkstra {
      */
     private static <ID, V extends Vertex<ID>> List<V> getSmallerPath(List<V> list, Map<ID, V> graph) {
         List<V> sPath = new ArrayList<>();
-        list = list.reversed();
-        V parent = list.getFirst();
+        V parent = list.getLast();
         sPath.add(parent);
 
         while ((parent = graph.get(parent.getParent())) != null)
