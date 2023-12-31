@@ -2,16 +2,16 @@ package com.trab3;
 
 import java.util.Collection;
 
-public class CVertex implements Vertex<String> {
-    private final String id;
+public class CVertex<T> implements Vertex<T> {
+    private final T id;
 
     private int cost;
 
-    private String parent;
+    private T parent;
 
-    private final Collection<String> adjacents;
+    private final Collection<T> adjacents;
 
-    public CVertex(String id, Collection<String> adjacents) {
+    public CVertex(T id, Collection<T> adjacents) {
         this.id = id;
         this.cost = 0;
         this.parent = null;
@@ -19,7 +19,7 @@ public class CVertex implements Vertex<String> {
     }
 
     @Override
-    public String getId() {
+    public T getId() {
         return id;
     }
 
@@ -29,17 +29,17 @@ public class CVertex implements Vertex<String> {
     }
 
     @Override
-    public String getParent() {
+    public T getParent() {
         return parent;
     }
 
     @Override
-    public Collection<String> getAdjacents() {
+    public Collection<T> getAdjacents() {
         return adjacents;
     }
 
     @Override
-    public void set(int cost, String parent) {
+    public void set(int cost, T parent) {
         this.cost = cost;
         this.parent = parent;
     }

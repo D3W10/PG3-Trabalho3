@@ -2,7 +2,7 @@ package com.trab3;
 
 import java.util.Collection;
 
-public class CVertexMetro extends CVertex implements Metro.VertexMetro<String> {
+public class CVertexMetro extends CVertex<String> implements Metro.VertexMetro<String> {
     private final Collection<String> lines;
 
     private final int weight;
